@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: fitness-coach
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: API_KEY
+        sync: false
