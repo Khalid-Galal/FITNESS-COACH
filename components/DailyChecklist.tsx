@@ -1,15 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+const CHECKLIST_STORAGE_KEY = 'fitness_daily_checklist';
+
+interface DailyChecklistData {
+  date: string;
+  protein: boolean;
+  steps: boolean;
+  water: boolean;
+  workout: boolean;
+}
+
+const getToday = () => new Date().toISOString().split('T')[0];
 
 const DailyChecklist: React.FC = () => {
-  const [checklist, setChecklist] = useState({
+  const [checklist, setChecklist] = useState<DailyChecklistData>({
+    date: getToday(),
     protein: false,
     steps: false,
     water: false,
     workout: false,
-    sleepRecorded: false,
   });
 
-  const toggle = (key: keyof typeof checklist) => {
+  // Load from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(CHECKLIST_STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Reset if it's a new day
+        if (parsed.date === getToday()) {
+          setChecklist(parsed);
+        }
+      } catch (e) {
+        console.error("Failed to parse checklist", e);
+      }
+    }
+  }, []);
+
+  // Save to localStorage whenever checklist changes
+  useEffect(() => {
+    localStorage.setItem(CHECKLIST_STORAGE_KEY, JSON.stringify(checklist));
+  }, [checklist]);
+
+  const toggle = (key: keyof Omit<DailyChecklistData, 'date'>) => {
     setChecklist(prev => ({ ...prev, [key]: !prev[key] }));
   };
 

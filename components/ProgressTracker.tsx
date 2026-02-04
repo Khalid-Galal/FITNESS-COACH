@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface MetricEntry {
   id: number;
@@ -9,9 +9,11 @@ interface MetricEntry {
 }
 
 const STORAGE_KEY = 'fitness_progress_metrics';
+const CHECKLIST_STORAGE_KEY = 'fitness_daily_checklist';
 
 const ProgressTracker: React.FC = () => {
   const [entries, setEntries] = useState<MetricEntry[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
     waist: '',
@@ -64,6 +66,56 @@ const ProgressTracker: React.FC = () => {
   const handleDelete = (id: number) => {
     if (window.confirm('Are you sure you want to delete this entry?')) {
       setEntries(prev => prev.filter(e => e.id !== id));
+    }
+  };
+
+  const handleExport = () => {
+    const exportData = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      progressMetrics: entries,
+      dailyChecklist: JSON.parse(localStorage.getItem(CHECKLIST_STORAGE_KEY) || '{}')
+    };
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `fitness-coach-backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const importData = JSON.parse(event.target?.result as string);
+
+        if (importData.progressMetrics && Array.isArray(importData.progressMetrics)) {
+          setEntries(importData.progressMetrics);
+        }
+
+        if (importData.dailyChecklist) {
+          localStorage.setItem(CHECKLIST_STORAGE_KEY, JSON.stringify(importData.dailyChecklist));
+        }
+
+        alert('Data imported successfully! Refresh the page to see checklist updates.');
+      } catch (err) {
+        alert('Failed to import data. Please check the file format.');
+        console.error('Import error:', err);
+      }
+    };
+    reader.readAsText(file);
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -195,6 +247,34 @@ const ProgressTracker: React.FC = () => {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Data Management */}
+      <div className="mt-6 pt-4 border-t border-slate-200">
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-slate-500">Backup your progress data</span>
+          <div className="flex gap-2">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImport}
+              accept=".json"
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="text-xs px-3 py-1.5 border border-slate-300 rounded-lg hover:bg-slate-50 text-slate-600 transition-colors"
+            >
+              Import
+            </button>
+            <button
+              onClick={handleExport}
+              className="text-xs px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            >
+              Export
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
