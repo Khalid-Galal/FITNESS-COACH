@@ -8,7 +8,7 @@ interface MetricEntry {
   photosTaken: boolean;
 }
 
-const STORAGE_KEY = 'fmf_progress_metrics';
+const STORAGE_KEY = 'fitness_progress_metrics';
 
 const ProgressTracker: React.FC = () => {
   const [entries, setEntries] = useState<MetricEntry[]>([]);

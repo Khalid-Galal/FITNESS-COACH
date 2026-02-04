@@ -16,7 +16,7 @@ const App: React.FC = () => {
              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
                 F
              </div>
-             <h1 className="text-lg font-bold text-slate-800 tracking-tight">FMF Fitness Coach</h1>
+             <h1 className="text-lg font-bold text-slate-800 tracking-tight">Fitness Coach</h1>
           </div>
           <button 
             onClick={() => setShowPlan(true)}

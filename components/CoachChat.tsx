@@ -36,7 +36,7 @@ const CoachChat: React.FC = () => {
             </select>
         </div>
         <p className="text-indigo-100 opacity-90">
-          Wake up, tell me how you feel (sleep, stress, FMF symptoms), and I'll build your day.
+          Wake up, tell me how you feel (sleep, stress, energy levels), and I'll build your day.
         </p>
       </div>
 

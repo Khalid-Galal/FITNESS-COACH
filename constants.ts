@@ -1,4 +1,4 @@
-export const APP_NAME = "FMF Daily Coach";
+export const APP_NAME = "Daily Fitness Coach";
 
 export const PLAN_TEXT = `
 ## 1) Objective + realistic expectations (what *actually* shrinks “belly”)
@@ -83,7 +83,7 @@ export const PLAN_TEXT = `
 * **Anchor wake time**
 * **Caffeine cutoff**: 8 hours before planned sleep
 
-# 8) FMF-safe guardrails 🛡️
+# 8) Health guardrails 🛡️
 ### Guardrails (non-negotiable)
 * **No extreme deficits**
 * **Prioritize consistent sleep + hydration**

@@ -22,7 +22,7 @@ export const getDailyAdvice = async (
   const model = "gemini-3-flash-preview";
   
   const systemInstruction = `
-    You are an expert fitness coach specifically for a client with Familial Mediterranean Fever (FMF).
+    You are an expert fitness coach.
     You have strict access to their "Plan" (provided below).
     
     Current Context:
