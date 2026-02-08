@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { exportLogs, importLogs, DailyLogEntry } from '../services/dailyLogService';
 
 interface MetricEntry {
   id: number;
@@ -10,6 +11,8 @@ interface MetricEntry {
 
 const STORAGE_KEY = 'fitness_progress_metrics';
 const CHECKLIST_STORAGE_KEY = 'fitness_daily_checklist';
+const WORKOUT_STORAGE_KEY = 'fitness_workout_badges';
+const WATER_STORAGE_KEY = 'fitness_water_intake';
 
 const ProgressTracker: React.FC = () => {
   const [entries, setEntries] = useState<MetricEntry[]>([]);
@@ -71,10 +74,13 @@ const ProgressTracker: React.FC = () => {
 
   const handleExport = () => {
     const exportData = {
-      version: 1,
+      version: 2,
       exportedAt: new Date().toISOString(),
       progressMetrics: entries,
-      dailyChecklist: JSON.parse(localStorage.getItem(CHECKLIST_STORAGE_KEY) || '{}')
+      dailyChecklist: JSON.parse(localStorage.getItem(CHECKLIST_STORAGE_KEY) || '{}'),
+      dailyLogs: exportLogs(), // All historical daily goal logs
+      workoutBadges: JSON.parse(localStorage.getItem(WORKOUT_STORAGE_KEY) || '[]'),
+      waterIntake: JSON.parse(localStorage.getItem(WATER_STORAGE_KEY) || '{}'),
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -97,15 +103,32 @@ const ProgressTracker: React.FC = () => {
       try {
         const importData = JSON.parse(event.target?.result as string);
 
+        // Import progress metrics (weight/waist)
         if (importData.progressMetrics && Array.isArray(importData.progressMetrics)) {
           setEntries(importData.progressMetrics);
         }
 
+        // Import daily checklist (today's status)
         if (importData.dailyChecklist) {
           localStorage.setItem(CHECKLIST_STORAGE_KEY, JSON.stringify(importData.dailyChecklist));
         }
 
-        alert('Data imported successfully! Refresh the page to see checklist updates.');
+        // Import daily logs history (new in version 2)
+        if (importData.dailyLogs && Array.isArray(importData.dailyLogs)) {
+          importLogs(importData.dailyLogs as DailyLogEntry[], true); // Merge with existing
+        }
+
+        // Import workout badges
+        if (importData.workoutBadges && Array.isArray(importData.workoutBadges)) {
+          localStorage.setItem(WORKOUT_STORAGE_KEY, JSON.stringify(importData.workoutBadges));
+        }
+
+        // Import water intake
+        if (importData.waterIntake) {
+          localStorage.setItem(WATER_STORAGE_KEY, JSON.stringify(importData.waterIntake));
+        }
+
+        alert('Data imported successfully! Refresh the page to see all updates.');
       } catch (err) {
         alert('Failed to import data. Please check the file format.');
         console.error('Import error:', err);

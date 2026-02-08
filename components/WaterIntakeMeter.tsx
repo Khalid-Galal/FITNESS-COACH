@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { updateTodayGoal, getTodayLog } from '../services/dailyLogService';
 
 const WATER_STORAGE_KEY = 'fitness_water_intake';
 
@@ -17,13 +18,22 @@ const WaterIntakeMeter: React.FC = () => {
     glasses: 0,
   });
 
-  // Load from localStorage
+  // Load from localStorage and daily log service
   useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+
+    // First try to get from today's log
+    const todayLog = getTodayLog();
+    if (todayLog?.waterGlasses !== undefined) {
+      setWaterData({ date: today, glasses: todayLog.waterGlasses });
+      return;
+    }
+
+    // Fallback to old localStorage
     const saved = localStorage.getItem(WATER_STORAGE_KEY);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        const today = new Date().toISOString().split('T')[0];
         if (parsed.date === today) {
           setWaterData(parsed);
         } else {
@@ -36,19 +46,24 @@ const WaterIntakeMeter: React.FC = () => {
     }
   }, []);
 
-  // Save to localStorage
+  // Save to localStorage and daily log service
   useEffect(() => {
     localStorage.setItem(WATER_STORAGE_KEY, JSON.stringify(waterData));
 
-    // Also update the daily checklist water status
+    const currentMl = waterData.glasses * GLASS_SIZE;
+    const isGoalMet = currentMl >= DAILY_GOAL;
+
+    // Save to daily log history with water glasses count
+    updateTodayGoal('water', isGoalMet, { waterGlasses: waterData.glasses });
+
+    // Also update the daily checklist water status (for backward compatibility)
     const checklistData = localStorage.getItem('fitness_daily_checklist');
     if (checklistData) {
       try {
         const checklist = JSON.parse(checklistData);
         const today = new Date().toISOString().split('T')[0];
         if (checklist.date === today) {
-          const currentMl = waterData.glasses * GLASS_SIZE;
-          checklist.water = currentMl >= DAILY_GOAL;
+          checklist.water = isGoalMet;
           localStorage.setItem('fitness_daily_checklist', JSON.stringify(checklist));
         }
       } catch (e) {

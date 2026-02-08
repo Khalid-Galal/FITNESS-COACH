@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getTodayLog, updateTodayGoal, migrateExistingData } from '../services/dailyLogService';
 
 const CHECKLIST_STORAGE_KEY = 'fitness_daily_checklist';
 
@@ -80,12 +81,34 @@ const DailyProgressRings: React.FC = () => {
     workout: false,
   });
 
+  // Migrate existing data on first load
   useEffect(() => {
+    migrateExistingData();
+  }, []);
+
+  // Load from both old localStorage and new daily log service
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+
+    // First check the daily log service
+    const todayLog = getTodayLog();
+    if (todayLog) {
+      setChecklist({
+        date: today,
+        protein: todayLog.protein,
+        steps: todayLog.steps,
+        water: todayLog.water,
+        workout: todayLog.workout,
+      });
+      return;
+    }
+
+    // Fallback to old localStorage
     const saved = localStorage.getItem(CHECKLIST_STORAGE_KEY);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed.date === new Date().toISOString().split('T')[0]) {
+        if (parsed.date === today) {
           setChecklist(parsed);
         }
       } catch (e) {
@@ -94,12 +117,17 @@ const DailyProgressRings: React.FC = () => {
     }
   }, []);
 
+  // Save to both old localStorage (for backward compatibility) and new daily log service
   useEffect(() => {
     localStorage.setItem(CHECKLIST_STORAGE_KEY, JSON.stringify(checklist));
   }, [checklist]);
 
   const toggle = (key: keyof Omit<DailyChecklistData, 'date'>) => {
-    setChecklist(prev => ({ ...prev, [key]: !prev[key] }));
+    const newValue = !checklist[key];
+    setChecklist(prev => ({ ...prev, [key]: newValue }));
+
+    // Save to daily log history
+    updateTodayGoal(key, newValue);
   };
 
   const completedCount = [checklist.protein, checklist.steps, checklist.water, checklist.workout].filter(Boolean).length;

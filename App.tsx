@@ -8,6 +8,7 @@ import DailyProgressRings from './components/DailyProgressRings';
 import WeeklyStreakCalendar from './components/WeeklyStreakCalendar';
 import WaterIntakeMeter from './components/WaterIntakeMeter';
 import WorkoutBadges from './components/WorkoutBadges';
+import DailyLogHistory from './components/DailyLogHistory';
 
 const App: React.FC = () => {
   const [showPlan, setShowPlan] = useState(false);
@@ -79,6 +80,9 @@ const App: React.FC = () => {
 
         {/* Progress Trend Chart */}
         <ProgressChart entries={[]} />
+
+        {/* Daily Goal History */}
+        <DailyLogHistory />
 
         {/* Weekly Progress Tracker - Data Entry */}
         <ProgressTracker />
