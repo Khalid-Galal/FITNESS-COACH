@@ -19,9 +19,16 @@ const App: React.FC = () => {
       <header className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-             <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
-                F
-             </div>
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" className="w-8 h-8">
+               <rect width="100" height="100" rx="20" fill="#1e1b4b"/>
+               <circle cx="50" cy="50" r="30" fill="none" stroke="#4338ca" strokeWidth="6"/>
+               <circle cx="50" cy="50" r="30" fill="none" stroke="#818cf8" strokeWidth="6" strokeDasharray="140 188" strokeLinecap="round" transform="rotate(-90 50 50)"/>
+               <g fill="#a5b4fc">
+                 <rect x="35" y="46" width="8" height="8" rx="1"/>
+                 <rect x="57" y="46" width="8" height="8" rx="1"/>
+                 <rect x="41" y="48" width="18" height="4" rx="1"/>
+               </g>
+             </svg>
              <h1 className="text-base sm:text-lg font-bold text-slate-800 tracking-tight">Fitness Coach</h1>
           </div>
           <button
