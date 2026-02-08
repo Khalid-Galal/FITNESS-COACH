@@ -22,43 +22,43 @@ const CoachChat: React.FC = () => {
 
   return (
     <div className="bg-white rounded-xl shadow-lg border border-indigo-100 overflow-hidden">
-      <div className="bg-indigo-600 p-6 text-white">
-        <div className="flex justify-between items-center mb-2">
-            <h2 className="text-xl font-bold">Daily Coach Check-In</h2>
-            <select 
+      <div className="bg-indigo-600 p-4 sm:p-6 text-white">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-2">
+            <h2 className="text-lg sm:text-xl font-bold">Daily Coach Check-In</h2>
+            <select
                 value={day}
                 onChange={(e) => setDay(e.target.value)}
-                className="bg-indigo-700 text-white text-sm rounded px-2 py-1 border border-indigo-500 outline-none"
+                className="bg-indigo-700 text-white text-sm rounded px-3 py-2 border border-indigo-500 outline-none w-full sm:w-auto"
             >
                 {Object.values(DayOfWeek).map(d => (
                     <option key={d} value={d}>{d}</option>
                 ))}
             </select>
         </div>
-        <p className="text-indigo-100 opacity-90">
+        <p className="text-indigo-100 opacity-90 text-sm sm:text-base">
           Wake up, tell me how you feel (sleep, stress, energy levels), and I'll build your day.
         </p>
       </div>
 
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {!response && (
             <form onSubmit={handleSubmit} className="mb-4">
             <label className="block text-sm font-medium text-slate-700 mb-2">
                 How are you feeling this morning?
             </label>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
                 <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="e.g., Slept 5 hours, feeling okay..."
-                className="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                className="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-base"
                 disabled={loading}
                 />
                 <button
                 type="submit"
                 disabled={loading}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-h-[48px]"
                 >
                 {loading ? (
                     <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

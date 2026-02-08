@@ -3,6 +3,11 @@ import CoachChat from './components/CoachChat';
 import DailyChecklist from './components/DailyChecklist';
 import ProgressTracker from './components/ProgressTracker';
 import PlanViewer from './components/PlanViewer';
+import ProgressChart from './components/ProgressChart';
+import DailyProgressRings from './components/DailyProgressRings';
+import WeeklyStreakCalendar from './components/WeeklyStreakCalendar';
+import WaterIntakeMeter from './components/WaterIntakeMeter';
+import WorkoutBadges from './components/WorkoutBadges';
 
 const App: React.FC = () => {
   const [showPlan, setShowPlan] = useState(false);
@@ -11,60 +16,84 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-10">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-3xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
                 F
              </div>
-             <h1 className="text-lg font-bold text-slate-800 tracking-tight">Fitness Coach</h1>
+             <h1 className="text-base sm:text-lg font-bold text-slate-800 tracking-tight">Fitness Coach</h1>
           </div>
-          <button 
+          <button
             onClick={() => setShowPlan(true)}
-            className="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors"
+            className="text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-slate-50 min-h-[44px]"
           >
-            View Full Plan
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span className="hidden sm:inline">View Full Plan</span>
+            <span className="sm:hidden">Plan</span>
           </button>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-3xl mx-auto px-4 py-6 space-y-6">
-        
+      <main className="max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
+
         {/* Quick Status Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-           <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+           <div className="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-slate-100 text-center">
               <span className="block text-xs text-slate-400 uppercase font-semibold mb-1">Calories</span>
-              <span className="block text-lg font-bold text-slate-800">1900-2100</span>
+              <span className="block text-base sm:text-lg font-bold text-slate-800">1900-2100</span>
            </div>
-           <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+           <div className="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-slate-100 text-center">
               <span className="block text-xs text-slate-400 uppercase font-semibold mb-1">Protein</span>
-              <span className="block text-lg font-bold text-indigo-600">135g</span>
+              <span className="block text-base sm:text-lg font-bold text-indigo-600">135g</span>
            </div>
-           <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+           <div className="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-slate-100 text-center">
               <span className="block text-xs text-slate-400 uppercase font-semibold mb-1">Water</span>
-              <span className="block text-lg font-bold text-blue-500">2.5L</span>
+              <span className="block text-base sm:text-lg font-bold text-blue-500">2.5L</span>
            </div>
-           <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center">
+           <div className="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-slate-100 text-center">
               <span className="block text-xs text-slate-400 uppercase font-semibold mb-1">Waist Goal</span>
-              <span className="block text-lg font-bold text-green-600">-6cm</span>
+              <span className="block text-base sm:text-lg font-bold text-green-600">-6cm</span>
            </div>
         </div>
 
         {/* AI Interface */}
         <CoachChat />
 
-        {/* Daily Tracking */}
-        <DailyChecklist />
+        {/* Daily Progress Rings - Interactive Goals */}
+        <DailyProgressRings />
 
-        {/* Weekly Progress Tracker */}
+        {/* Two Column Layout for Desktop */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          {/* Water Intake Meter */}
+          <WaterIntakeMeter />
+
+          {/* Weekly Streak Calendar */}
+          <WeeklyStreakCalendar />
+        </div>
+
+        {/* Workout Badges */}
+        <WorkoutBadges />
+
+        {/* Progress Trend Chart */}
+        <ProgressChart entries={[]} />
+
+        {/* Weekly Progress Tracker - Data Entry */}
         <ProgressTracker />
 
+        {/* Daily Tracking - Old checklist (hidden on mobile, shown as backup) */}
+        <div className="hidden lg:block">
+          <DailyChecklist />
+        </div>
+
         {/* Workout Quick Reference (Static) */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 opacity-80 hover:opacity-100 transition-opacity">
-           <h3 className="text-lg font-semibold text-slate-800 mb-4">Quick Workout Reference</h3>
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 opacity-90 hover:opacity-100 transition-opacity">
+           <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4">Quick Workout Reference</h3>
            <div className="space-y-4">
              <details className="group">
-               <summary className="flex justify-between items-center font-medium cursor-pointer list-none text-slate-700 hover:text-indigo-600">
+               <summary className="flex justify-between items-center font-medium cursor-pointer list-none text-slate-700 hover:text-indigo-600 py-2">
                  <span>Full Body A (Monday)</span>
                  <span className="transition group-open:rotate-180">
                    <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
@@ -80,7 +109,7 @@ const App: React.FC = () => {
              </details>
 
              <details className="group">
-               <summary className="flex justify-between items-center font-medium cursor-pointer list-none text-slate-700 hover:text-indigo-600">
+               <summary className="flex justify-between items-center font-medium cursor-pointer list-none text-slate-700 hover:text-indigo-600 py-2">
                  <span>Full Body B (Wednesday)</span>
                  <span className="transition group-open:rotate-180">
                    <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
@@ -96,7 +125,7 @@ const App: React.FC = () => {
              </details>
 
              <details className="group">
-               <summary className="flex justify-between items-center font-medium cursor-pointer list-none text-slate-700 hover:text-indigo-600">
+               <summary className="flex justify-between items-center font-medium cursor-pointer list-none text-slate-700 hover:text-indigo-600 py-2">
                  <span>Full Body C (Friday)</span>
                  <span className="transition group-open:rotate-180">
                    <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>

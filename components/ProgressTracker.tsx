@@ -120,138 +120,170 @@ const ProgressTracker: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-slate-800">Weekly Progress Tracker</h3>
-        <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">Local History</span>
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
+        <h3 className="text-base sm:text-lg font-semibold text-slate-800">Weekly Progress Tracker</h3>
+        <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full self-start sm:self-auto">Local History</span>
       </div>
       
       {/* Input Form */}
-      <form onSubmit={handleSubmit} className="mb-8 p-4 bg-slate-50 rounded-lg border border-slate-100">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Date</label>
-            <input 
-              type="date" 
-              required
-              value={formData.date}
-              onChange={(e) => setFormData({...formData, date: e.target.value})}
-              className="w-full px-3 py-2 rounded border border-slate-300 focus:outline-none focus:border-indigo-500 text-sm"
-            />
-          </div>
-          <div>
-             {/* Spacer or additional header info could go here */}
-             <div className="hidden md:block text-xs text-slate-400 mt-7">
-               Track weekly to see true trends.
-             </div>
-          </div>
+      <form onSubmit={handleSubmit} className="mb-6 sm:mb-8 p-3 sm:p-4 bg-slate-50 rounded-lg border border-slate-100">
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-slate-700 mb-1">Date</label>
+          <input
+            type="date"
+            required
+            value={formData.date}
+            onChange={(e) => setFormData({...formData, date: e.target.value})}
+            className="w-full px-3 py-2 rounded border border-slate-300 focus:outline-none focus:border-indigo-500 text-base"
+          />
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Waist <span className="text-xs text-slate-400 font-normal">(cm)</span>
             </label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               step="0.1"
-              placeholder="e.g. 95.5"
+              placeholder="95.5"
               value={formData.waist}
               onChange={(e) => setFormData({...formData, waist: e.target.value})}
-              className="w-full px-3 py-2 rounded border border-slate-300 focus:outline-none focus:border-indigo-500 text-sm"
+              className="w-full px-3 py-2 rounded border border-slate-300 focus:outline-none focus:border-indigo-500 text-base"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Weight <span className="text-xs text-slate-400 font-normal">(kg)</span>
             </label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               step="0.1"
-              placeholder="e.g. 82.0"
+              placeholder="82.0"
               value={formData.weight}
               onChange={(e) => setFormData({...formData, weight: e.target.value})}
-              className="w-full px-3 py-2 rounded border border-slate-300 focus:outline-none focus:border-indigo-500 text-sm"
+              className="w-full px-3 py-2 rounded border border-slate-300 focus:outline-none focus:border-indigo-500 text-base"
             />
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-2">
           <label className="flex items-center cursor-pointer">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               checked={formData.photosTaken}
               onChange={(e) => setFormData({...formData, photosTaken: e.target.checked})}
-              className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
             />
             <span className="ml-2 text-sm text-slate-700">Photos taken? <span className="text-xs text-slate-400">(Front/Side)</span></span>
           </label>
-          
-          <button 
-            type="submit" 
-            className="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+
+          <button
+            type="submit"
+            className="bg-slate-800 hover:bg-slate-900 text-white px-4 py-3 rounded-lg text-sm font-medium transition-colors w-full sm:w-auto min-h-[48px]"
           >
             Log Entry
           </button>
         </div>
       </form>
 
-      {/* History Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm text-left text-slate-600">
-          <thead className="text-xs text-slate-700 uppercase bg-slate-50 border-b">
-            <tr>
-              <th className="px-4 py-3 font-semibold">Date</th>
-              <th className="px-4 py-3 font-semibold">Waist</th>
-              <th className="px-4 py-3 font-semibold">Weight</th>
-              <th className="px-4 py-3 font-semibold">Photos</th>
-              <th className="px-4 py-3 text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {entries.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-slate-400 italic">
-                  No entries yet. Start tracking your wins!
-                </td>
-              </tr>
-            ) : (
-              entries.map((entry) => (
-                <tr key={entry.id} className="border-b last:border-0 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-slate-800">
-                    {new Date(entry.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                  </td>
-                  <td className="px-4 py-3">
-                    {entry.waist ? `${entry.waist} cm` : '-'}
-                  </td>
-                  <td className="px-4 py-3">
-                    {entry.weight ? `${entry.weight} kg` : '-'}
-                  </td>
-                  <td className="px-4 py-3">
+      {/* History - Mobile Cards / Desktop Table */}
+      {entries.length === 0 ? (
+        <div className="px-4 py-6 text-center text-slate-400 italic">
+          No entries yet. Start tracking your wins!
+        </div>
+      ) : (
+        <>
+          {/* Mobile Card View */}
+          <div className="sm:hidden space-y-3">
+            {entries.map((entry) => (
+              <div key={entry.id} className="bg-slate-50 rounded-lg p-4 border border-slate-100">
+                <div className="flex justify-between items-start mb-2">
+                  <span className="font-semibold text-slate-800">
+                    {new Date(entry.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+                  </span>
+                  <button
+                    onClick={() => handleDelete(entry.id)}
+                    className="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-50 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-sm">
+                  <div>
+                    <span className="text-slate-400 text-xs block">Waist</span>
+                    <span className="text-slate-700 font-medium">{entry.waist ? `${entry.waist} cm` : '-'}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 text-xs block">Weight</span>
+                    <span className="text-slate-700 font-medium">{entry.weight ? `${entry.weight} kg` : '-'}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 text-xs block">Photos</span>
                     {entry.photosTaken ? (
                       <span className="text-green-600 bg-green-50 px-2 py-0.5 rounded-full text-xs font-medium">Done</span>
                     ) : (
                       <span className="text-slate-300">-</span>
                     )}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <button 
-                      onClick={() => handleDelete(entry.id)}
-                      className="text-red-400 hover:text-red-600 px-2 py-1 rounded hover:bg-red-50 transition-colors"
-                    >
-                      ×
-                    </button>
-                  </td>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="min-w-full text-sm text-left text-slate-600">
+              <thead className="text-xs text-slate-700 uppercase bg-slate-50 border-b">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">Date</th>
+                  <th className="px-4 py-3 font-semibold">Waist</th>
+                  <th className="px-4 py-3 font-semibold">Weight</th>
+                  <th className="px-4 py-3 font-semibold">Photos</th>
+                  <th className="px-4 py-3 text-right">Action</th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody>
+                {entries.map((entry) => (
+                  <tr key={entry.id} className="border-b last:border-0 hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-slate-800">
+                      {new Date(entry.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                    </td>
+                    <td className="px-4 py-3">
+                      {entry.waist ? `${entry.waist} cm` : '-'}
+                    </td>
+                    <td className="px-4 py-3">
+                      {entry.weight ? `${entry.weight} kg` : '-'}
+                    </td>
+                    <td className="px-4 py-3">
+                      {entry.photosTaken ? (
+                        <span className="text-green-600 bg-green-50 px-2 py-0.5 rounded-full text-xs font-medium">Done</span>
+                      ) : (
+                        <span className="text-slate-300">-</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        onClick={() => handleDelete(entry.id)}
+                        className="text-red-400 hover:text-red-600 px-2 py-1 rounded hover:bg-red-50 transition-colors"
+                      >
+                        ×
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
 
       {/* Data Management */}
       <div className="mt-6 pt-4 border-t border-slate-200">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <span className="text-xs text-slate-500">Backup your progress data</span>
           <div className="flex gap-2">
             <input
@@ -263,13 +295,13 @@ const ProgressTracker: React.FC = () => {
             />
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="text-xs px-3 py-1.5 border border-slate-300 rounded-lg hover:bg-slate-50 text-slate-600 transition-colors"
+              className="flex-1 sm:flex-none text-sm px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 text-slate-600 transition-colors min-h-[44px]"
             >
               Import
             </button>
             <button
               onClick={handleExport}
-              className="text-xs px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              className="flex-1 sm:flex-none text-sm px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors min-h-[44px]"
             >
               Export
             </button>
